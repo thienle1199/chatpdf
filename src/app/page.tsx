@@ -1,3 +1,4 @@
+import FileUpload from "@/components/FileUpload";
 import { Button } from "@/components/ui/button";
 import { UserButton, auth } from "@clerk/nextjs";
 import Link from "next/link";
@@ -15,6 +16,8 @@ export default function Home() {
         <p>
           We&apos;re here to help you have a conversation with your document
         </p>
+
+        <FileUpload />
 
         {!isAuth && (
           <Link href="/sign-in">

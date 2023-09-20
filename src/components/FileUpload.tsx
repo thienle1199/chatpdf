@@ -4,7 +4,6 @@ import React from "react";
 import { useDropzone } from "react-dropzone";
 import { Inbox } from "lucide-react";
 import { type PutBlobResult } from "@vercel/blob";
-import { upload } from "@vercel/blob/client";
 
 const FileUpload = () => {
   const { getInputProps, getRootProps } = useDropzone({

@@ -2,9 +2,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Provider from "@/components/Provider";
-
-const inter = Inter({ subsets: ["latin"] });
+import Provider from "./_trpc/Provider";
 
 export const metadata: Metadata = {
   title: "ChatPDF",

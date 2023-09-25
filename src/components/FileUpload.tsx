@@ -1,33 +1,61 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Inbox } from "lucide-react";
 import { type PutBlobResult } from "@vercel/blob";
+import { trpc } from "@/app/_trpc/client";
 
 const FileUpload = () => {
+  const [uploading, setUploading] = useState(false)
+
+  
+  const {mutate} = trpc.createChat.useMutation();
+
   const { getInputProps, getRootProps } = useDropzone({
     accept: {
       "application/pdf": [".pdf"],
     },
     maxFiles: 1,
     onDrop: async (acceptedFiles) => {
-      console.log("acceptedFiles", acceptedFiles);
       const file = acceptedFiles[0];
 
       if (file.size > 4.5 * 1024 * 1024) {
         throw new Error("File can't exeed 4.5MB, please select another file");
       }
+      setUploading(true)
 
-      const response = await fetch(`/api/upload?filename=${file.name}`, {
-        method: "POST",
-        body: file,
-      });
+      try {
+        const response = await fetch(`/api/upload?filename=${file.name}`, {
+          method: "POST",
+          body: file,
+        });
 
-      const newBlob = (await response.json()) as PutBlobResult;
-      console.log("newBlob", newBlob);
+        const newBlob = (await response.json()) as PutBlobResult;
+        if (!newBlob.url || !newBlob.pathname) {
+          throw new Error("Something went wrong");
+
+        }
+        mutate({
+          fileUrl: newBlob.url,
+          pathName: newBlob.pathname
+        }, {
+          onSuccess: (data) => {
+            console.log(data)
+          },
+          onError: (error) => {
+            console.log(error)
+          }
+        })
+        console.log("newBlob", newBlob);
+
+      } catch (error) {
+        alert(error)
+      }
+
     },
   });
+
   return (
     <div className="bg-white p-2 rounded-xl">
       <div
